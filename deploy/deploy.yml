@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  labels:
+    app: chowda
+  name: chowda
+
+spec:
+  selector:
+    matchLabels:
+      app: chowda
+
+  template:
+    metadata:
+      labels:
+        app: chowda
+
+    spec:
+      containers:
+        - image: ghcr.io/wgbh-mla/chowda:main
+          imagePullPolicy: Always
+          name: chowda
+          command:
+            [
+              'gunicorn',
+              'chowda:app',
+              '-b',
+              '0.0.0.0:8000',
+              '-w',
+              '4',
+              '--worker-class',
+              'uvicorn.workers.UvicornWorker',
+            ]
+          envFrom:
+            - configMapRef:
+                name: chowda-config
+            - secretRef:
+                name: chowda-secret
