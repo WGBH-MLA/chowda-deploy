@@ -24,7 +24,7 @@ spec:
           command:
             [
               'gunicorn',
-              'chowda:app',
+              'chowda.app:app',
               '-b',
               '0.0.0.0:8000',
               '-w',
