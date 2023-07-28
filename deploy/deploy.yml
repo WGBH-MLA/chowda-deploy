@@ -18,7 +18,7 @@ spec:
 
     spec:
       containers:
-        - image: ghcr.io/wgbh-mla/chowda:main
+        - image: ghcr.io/wgbh-mla/chowda:pr-89
           imagePullPolicy: Always
           name: chowda
           command:
@@ -27,13 +27,21 @@ spec:
               'chowda.app:app',
               '-b',
               '0.0.0.0:8000',
-              '-w',
+              '--workers',
               '4',
               '--worker-class',
               'uvicorn.workers.UvicornWorker',
+              '--forwarded-allow-ips',
+              '*',
             ]
           envFrom:
             - configMapRef:
                 name: chowda-config
             - secretRef:
                 name: chowda-secret
+            - configMapRef:
+                name: metaflow
+            - secretRef:
+                name: metaflow-secret
+            - secretRef:
+                name: aws-secret
