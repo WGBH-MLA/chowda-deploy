@@ -4,4 +4,5 @@ metadata:
   name: chowda-config
 data:
   PRODUCTION: 'true'
+  METAFLOW_NAMESPACE: production:ingestflow-0-sdjk
   # WEB_CONCURRENCY: '3'

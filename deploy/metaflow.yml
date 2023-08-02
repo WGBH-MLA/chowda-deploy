@@ -9,3 +9,4 @@ data:
   METAFLOW_DEFAULT_METADATA: service
   METAFLOW_DATASTORE_SYSROOT_S3: s3://clams-metaflow-metaflows3bucket-15l571qw7ao7p/metaflow
   METAFLOW_DATATOOLS_S3ROOT: s3://clams-metaflow-metaflows3bucket-15l571qw7ao7p/data
+  METAFLOW_ARGO_EVENTS_WEBHOOK_URL: http://webhook-eventsource-svc.argo-events.svc.cluster.local:12000/chowda
