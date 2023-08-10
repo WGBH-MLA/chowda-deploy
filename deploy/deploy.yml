@@ -18,8 +18,7 @@ spec:
 
     spec:
       containers:
-        - image: ghcr.io/wgbh-mla/chowda:pr-89
-          imagePullPolicy: Always
+        - imagePullPolicy: Always
           name: chowda
           command:
             [
@@ -33,6 +32,10 @@ spec:
               'uvicorn.workers.UvicornWorker',
               '--forwarded-allow-ips',
               '*',
+              '--access-logfile',
+              '-',
+              '--error-logfile',
+              '-',
             ]
           envFrom:
             - configMapRef:
