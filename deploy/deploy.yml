@@ -18,7 +18,8 @@ spec:
 
     spec:
       containers:
-        - imagePullPolicy: Always
+        - image: ghcr.io/wgbh-mla/chowda:latest
+          imagePullPolicy: Always
           name: chowda
           command:
             [
