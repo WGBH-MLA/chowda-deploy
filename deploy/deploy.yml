@@ -18,7 +18,7 @@ spec:
 
     spec:
       containers:
-        - image: ghcr.io/wgbh-mla/chowda:latest
+        - image: ghcr.io/wgbh-mla/chowda:main
           imagePullPolicy: Always
           name: chowda
           command:
@@ -38,6 +38,13 @@ spec:
               '--error-logfile',
               '-',
             ]
+          resources:
+            limits:
+              cpu: '1000m'
+              memory: '2Gi'
+            requests:
+              cpu: '100m'
+              memory: '100Mi'
           envFrom:
             - configMapRef:
                 name: chowda-config
