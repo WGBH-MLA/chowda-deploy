@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: chowda-events-watcher
+  namespace: argo-events
+spec:
+  dependencies:
+    - name: chowda-events-dep
+      eventSourceName: webhook
+      eventName: chowda
+  triggers:
+    - template:
+        name: chowda-update-trigger
+        http:
+          url: http://chowda.clams/api/event/
+          payload:
+            - src:
+                dependencyName: chowda-events-dep
+                dataKey: body
+              dest: body
+            - src:
+                dependencyName: chowda-events-dep
+                contextKey: source
+              dest: source
+            - src:
+                dependencyName: chowda-events-dep
+                contextKey: subject
+              dest: subject
+          method: POST
+      retryStrategy:
+        duration: 3s
+        steps: 3
