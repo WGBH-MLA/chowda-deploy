@@ -37,11 +37,13 @@ spec:
               '-',
               '--error-logfile',
               '-',
+              '--timeout',
+              '60',
             ]
           resources:
             limits:
-              cpu: '1000m'
-              memory: '2Gi'
+              cpu: '2'
+              memory: '3Gi'
             requests:
               cpu: '100m'
               memory: '100Mi'
