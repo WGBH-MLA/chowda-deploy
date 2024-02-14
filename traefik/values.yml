@@ -1,71 +1,56 @@
 additionalArguments:
   # Configure your CertificateResolver here...
-  #
-  # HTTP Challenge
-  # ---
-  # Generic Example:
-  - --certificatesresolvers.generic.acme.email=ryan_harbert@wgbh.org
-  - --certificatesresolvers.generic.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
-  # - --certificatesresolvers.generic.acme.httpChallenge.entryPoint=web
-  - --certificatesresolvers.generic.acme.storage=/ssl-certs/acme-generic.json
-  - --certificatesresolvers.generic.acme.tlschallenge=true
-#
-# Prod / Staging Example:
-#   - --certificatesresolvers.staging.acme.email=your-email@example.com
-#   - --certificatesresolvers.staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
-#   - --certificatesresolvers.staging.acme.httpChallenge.entryPoint=web
-#   - --certificatesresolvers.staging.acme.storage=/ssl-certs/acme-staging.json
-#   - --certificatesresolvers.production.acme.email=your-email@example.com
-#   - --certificatesresolvers.production.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
-#   - --certificatesresolvers.production.acme.httpChallenge.entryPoint=web
-#   - --certificatesresolvers.production.acme.storage=/ssl-certs/acme-production.json
-#
-# DNS Challenge
-# ---
-# Cloudflare Example:
-#  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
-#  - --certificatesresolvers.cloudflare.acme.email=your-email@example.com
-#  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
-#  - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
-#
-# Generic (replace with your DNS provider):
-#  - --certificatesresolvers.generic.acme.dnschallenge.provider=generic
-#  - --certificatesresolvers.generic.acme.email=your-email@example.com
-#  - --certificatesresolvers.generic.acme.storage=/ssl-certs/acme-generic.json
+
+  # Staging:
+  - --certificatesresolvers.staging.acme.email=ryan_harbert@wgbh.org
+  - --certificatesresolvers.staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+  # - --certificatesresolvers.staging.acme.httpChallenge.entryPoint=web
+  - --certificatesresolvers.staging.acme.storage=/ssl-certs/acme-staging.json
+  - --certificatesresolvers.staging.acme.tlschallenge=true
+
+  # Production
+  - --certificatesresolvers.production.acme.email=ryan_harbert@wgbh.org
+  - --certificatesresolvers.production.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+  # - --certificatesresolvers.production.acme.httpChallenge.entryPoint=web
+  - --certificatesresolvers.production.acme.storage=/ssl-certs/acme-production.json
+  - --certificatesresolvers.production.acme.tlschallenge=true
 
 logs:
   # Configure log settings here...
   general:
     level: ERROR
+  access:
+    enabled: true
+    format: json
+    # filePath: /var/log/access.log
+    # bufferingSize: 10
+    # fields:
+    #   headers:
+    #     defaultmode: keep
 
 ports:
   # Configure your entrypoints here...
   web:
-    # (optional) Permanent Redirect to HTTPS
-    redirectTo: websecure
+    # Permanent Redirect to HTTPS
+    redirectTo:
+      port: websecure
 
   websecure:
     tls:
       enabled: true
-      # (optional) Set a Default CertResolver
-      certResolver: generic
+      # Set a Default CertResolver
+      certResolver: production
+    forwardedHeaders:
+      # Trust forwared headers from the CLAMS subnet
+      trustedIPs:
+        - '10.0.32.0/24'
+    proxyProtocol:
+      # TODO: How to get the actual loadbalancer IP?
+      trustedIPs:
+        - '10.0.0.0/16'
 
 env:
 # Set your environment variables here...
-#
-# DNS Challenge Credentials
-# ---
-# Cloudflare Example:
-#   - name: CF_API_EMAIL
-#     valueFrom:
-#       secretKeyRef:
-#         key: email
-#         name: cloudflare-credentials
-#   - name: CF_API_KEY
-#     valueFrom:
-#       secretKeyRef:
-#         key: apiKey
-#         name: cloudflare-credentials
 
 # Disable Dashboard
 ingressRoute:
@@ -77,10 +62,6 @@ persistence:
   enabled: true
   existingClaim: ssl-certs
   path: /ssl-certs
-  # name: ssl-certs
-  # volumeName: ssl-certs
-  # size: 1Gi
-  # storageClass: efs-sc
 
 # deployment:
 #   initContainers:
@@ -97,3 +78,11 @@ persistence:
 ingressClass:
   enabled: true
   isDefaultClass: true
+
+service:
+  spec:
+    # Set the externalTrafficPolicy to Local to preserve the client source IP
+    externalTrafficPolicy: Local
+  annotations:
+    # Enable Proxy Protocol for AWS Load Balancer
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
