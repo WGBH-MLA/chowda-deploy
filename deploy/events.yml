@@ -27,6 +27,13 @@ spec:
                 contextKey: subject
               dest: subject
           method: POST
+          secureHeaders:
+            - name: Chowda API Authorization
+              valueFrom:
+                secretKeyRef:
+                  name: argo-events-chowda-api-token
+                  key: token
+
       retryStrategy:
         duration: 3s
         steps: 3
