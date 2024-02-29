@@ -28,7 +28,7 @@ spec:
               dest: subject
           method: POST
           secureHeaders:
-            - name: Chowda API Authorization
+            - name: Authorization
               valueFrom:
                 secretKeyRef:
                   name: argo-events-chowda-api-token
