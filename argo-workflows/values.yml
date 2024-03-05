@@ -25,3 +25,6 @@ artifactRepository:
     secretKeySecret:
       name: s3-cred
       key: secretKey
+server:
+  extraArgs:
+    - --auth-mode=server
