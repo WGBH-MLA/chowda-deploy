@@ -1,0 +1,27 @@
+workflow:
+  serviceAccount:
+    create: true
+    name: workflow
+  rbac:
+    create: true
+controller:
+  workflowNamespaces:
+    - test
+    - clams
+    - argo-events
+  extraEnv:
+    - name: DEFAULT_REQUEUE_TIME
+      value: 1s
+crds:
+  install: false
+artifactRepository:
+  s3:
+    bucket: clams-tmp
+    endpoint: s3.amazonaws.com
+    region: us-east-1
+    accessKeySecret:
+      name: s3-cred
+      key: accessKey
+    secretKeySecret:
+      name: s3-cred
+      key: secretKey
